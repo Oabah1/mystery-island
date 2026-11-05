@@ -15,7 +15,6 @@ def play_game():
 
     cave_path = None
     has_rest = False
-    has_lit_lighthouse = False
 
     print(f"\nWelcome, {player_name}!")
     print("You are stranded on a mysterious island.")
@@ -40,10 +39,11 @@ def play_game():
         print("10. Check player status")
         print("11. Quit game")
 
-        choice = input("Choose an option: ")
+        choice = input("Choose an option: ").strip()
 
-        # BEACH EXPLORATION
+        # 1. EXPLORE THE BEACH
         if choice == "1":
+
             if current_location != "Beach":
                 print("\nYou are not currently at the Beach.")
 
@@ -56,7 +56,7 @@ def play_game():
                 print("1. Pick up the rope")
                 print("2. Leave the rope")
 
-                beach_choice = input("What would you like to do? ")
+                beach_choice = input("What would you like to do? ").strip()
 
                 if beach_choice == "1":
                     inventory.append("rope")
@@ -68,8 +68,9 @@ def play_game():
                 else:
                     print("Invalid choice. Please try again.")
 
-        # TRAVEL TO JUNGLE
+        # 2. TRAVEL TO THE JUNGLE
         elif choice == "2":
+
             if current_location == "Jungle":
                 print("\nYou are already in the Jungle.")
 
@@ -92,8 +93,9 @@ def play_game():
             else:
                 print("\nYou have no energy left.")
 
-        # JUNGLE EXPLORATION
+        # 3. EXPLORE THE JUNGLE
         elif choice == "3":
+
             if current_location != "Jungle":
                 print("\nYou must travel to the Jungle before exploring it.")
 
@@ -105,7 +107,7 @@ def play_game():
                 print("1. Pick up the lantern")
                 print("2. Leave the lantern")
 
-                jungle_choice = input("What would you like to do? ")
+                jungle_choice = input("What would you like to do? ").strip()
 
                 if jungle_choice == "1":
                     inventory.append("lantern")
@@ -117,8 +119,9 @@ def play_game():
                 else:
                     print("Invalid choice. Please try again.")
 
-        # TRAVEL TO CAVE
+        # 4. TRAVEL TO THE CAVE
         elif choice == "4":
+
             if current_location == "Cave":
                 print("\nYou are already in the Cave.")
 
@@ -141,8 +144,9 @@ def play_game():
             else:
                 print("\nYou have no energy left.")
 
-        # CAVE EXPLORATION
+        # 5. EXPLORE THE CAVE
         elif choice == "5":
+
             if current_location != "Cave":
                 print("\nYou must travel to the Cave before exploring it.")
 
@@ -159,9 +163,10 @@ def play_game():
                 print("1. Take the underground stream (costs 1 energy)")
                 print("2. Take the rocky path (costs no energy)")
 
-                cave_choice = input("Which path will you choose? ")
+                cave_choice = input("Which path will you choose? ").strip()
 
                 if cave_choice == "1":
+
                     if energy > 0:
                         energy -= 1
                         cave_path = "stream"
@@ -190,8 +195,9 @@ def play_game():
                 else:
                     print("Invalid choice. Please try again.")
 
-        # REST IN THE CAVE
+        # 6. REST IN THE CAVE
         elif choice == "6":
+
             if current_location != "Cave":
                 print("\nYou can only rest inside the Cave.")
 
@@ -211,8 +217,9 @@ def play_game():
                 print("\nYou rested and recovered 1 energy point.")
                 print(f"Your remaining energy is {energy}.")
 
-        # TRAVEL TO OLD BRIDGE
+        # 7. TRAVEL TO THE OLD BRIDGE
         elif choice == "7":
+
             if current_location == "Old Bridge":
                 print("\nYou are already at the Old Bridge.")
 
@@ -235,8 +242,9 @@ def play_game():
             else:
                 print("\nYou have no energy left.")
 
-        # CROSS OLD BRIDGE
+        # 8. CROSS THE OLD BRIDGE
         elif choice == "8":
+
             if current_location != "Old Bridge":
                 print("\nYou must be at the Old Bridge to cross it.")
 
@@ -260,8 +268,9 @@ def play_game():
                     print("GAME OVER!")
                     game_over = True
 
-        # LIGHT THE LIGHTHOUSE
+        # 9. LIGHT THE LIGHTHOUSE
         elif choice == "9":
+
             if current_location != "Lighthouse":
                 print("\nYou must reach the Lighthouse first.")
 
@@ -276,11 +285,11 @@ def play_game():
                 print(f"\nCongratulations, {player_name}!")
                 print("YOU HAVE WON THE GAME!")
 
-                has_lit_lighthouse = True
                 game_over = True
 
-        # PLAYER STATUS
+        # 10. CHECK PLAYER STATUS
         elif choice == "10":
+
             print("\n========== PLAYER STATUS ==========")
             print(f"Player: {player_name}")
             print(f"Location: {current_location}")
@@ -288,33 +297,43 @@ def play_game():
             print(f"Inventory: {inventory}")
             print("===================================")
 
-        # QUIT GAME
+        # 11. QUIT GAME
         elif choice == "11":
+
             print(f"\nGoodbye, {player_name}!")
             print("Thanks for playing Mystery Island.")
             game_running = False
 
-        # INVALID INPUT
+        # INVALID MENU INPUT
         else:
             print("\nInvalid option.")
             print("Please choose a number from 1 to 11.")
 
-    if energy == 0 and not has_lit_lighthouse:
-        print("\nYour adventure has ended because your energy reached zero.")
-
     return game_running
 
 
-# REPLAY SECTION
-while True:
-    play_again = play_game()
+# START GAME ONLY WHEN THIS FILE IS RUN DIRECTLY
+if __name__ == "__main__":
 
-    if not play_again:
-        break
+    while True:
 
-    replay = input("\nWould you like to play again? (yes/no): ").lower().strip()
+        play_again = play_game()
 
-    if replay != "yes" and replay != "y":
-        print("\nThank you for playing Mystery Island!")
-        print("See you on your next adventure.")
-        break
+        if not play_again:
+            break
+
+        while True:
+            replay = input(
+                "\nWould you like to play again? (yes/no): "
+            ).lower().strip()
+
+            if replay in ("yes", "y"):
+                break
+
+            elif replay in ("no", "n"):
+                print("\nThank you for playing Mystery Island!")
+                print("See you on your next adventure.")
+                raise SystemExit
+
+            else:
+                print("Invalid response. Please enter yes or no.")
