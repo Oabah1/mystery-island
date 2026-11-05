@@ -312,8 +312,9 @@ def play_game():
     return game_running
 
 
-# START GAME ONLY WHEN THIS FILE IS RUN DIRECTLY
-if __name__ == "__main__":
+
+# MAIN GAME LOOP
+def main():
 
     while True:
 
@@ -333,7 +334,12 @@ if __name__ == "__main__":
             elif replay in ("no", "n"):
                 print("\nThank you for playing Mystery Island!")
                 print("See you on your next adventure.")
-                raise SystemExit
+                return
 
             else:
                 print("Invalid response. Please enter yes or no.")
+
+
+# START GAME ONLY WHEN THIS FILE IS RUN DIRECTLY
+if __name__ == "__main__":
+    main()

@@ -1,10 +1,9 @@
-
 import unittest
 from unittest.mock import patch
 import io
 from contextlib import redirect_stdout
 
-from game import play_game
+from game import play_game, main
 
 
 class TestMysteryIsland(unittest.TestCase):
@@ -14,6 +13,73 @@ class TestMysteryIsland(unittest.TestCase):
             result = play_game()
 
         self.assertFalse(result)
+
+    def test_player_starts_at_beach_with_five_energy_and_empty_inventory(self):
+        output = io.StringIO()
+
+        with patch("builtins.input", side_effect=[
+            "Sanctus", "10", "11"
+        ]):
+            with redirect_stdout(output):
+                play_game()
+
+        game_output = output.getvalue()
+
+        self.assertIn("Current location: Beach", game_output)
+        self.assertIn("Energy: 5", game_output)
+        self.assertIn("Inventory: []", game_output)
+
+    def test_legal_movement_reduces_energy_by_one(self):
+        output = io.StringIO()
+
+        with patch("builtins.input", side_effect=[
+            "Sanctus", "2", "10", "11"
+        ]):
+            with redirect_stdout(output):
+                play_game()
+
+        game_output = output.getvalue()
+
+        self.assertIn("Current location: Jungle", game_output)
+        self.assertIn("Energy: 4", game_output)
+
+    def test_rejected_movement_does_not_change_location_or_energy(self):
+        output = io.StringIO()
+
+        with patch("builtins.input", side_effect=[
+            "Sanctus", "4", "10", "11"
+        ]):
+            with redirect_stdout(output):
+                play_game()
+
+        game_output = output.getvalue()
+
+        self.assertIn("Current location: Beach", game_output)
+        self.assertIn("Energy: 5", game_output)
+
+    def test_replay_resets_player_state(self):
+        output = io.StringIO()
+
+        with patch("builtins.input", side_effect=[
+            # First game: complete a winning journey
+            "First Player", "1", "1", "2", "3", "1",
+            "4", "5", "1", "6", "7", "8", "9",
+
+            # Agree to replay
+            "yes",
+
+            # Second game: check fresh state and quit
+            "Second Player", "10", "11"
+        ]):
+            with redirect_stdout(output):
+                main()
+
+        game_output = output.getvalue()
+
+        self.assertIn("Welcome, Second Player!", game_output)
+        self.assertIn("Current location: Beach", game_output)
+        self.assertIn("Energy: 5", game_output)
+        self.assertIn("Inventory: []", game_output)
 
     def test_player_cannot_cross_bridge_without_rope(self):
         output = io.StringIO()
@@ -138,9 +204,9 @@ class TestMysteryIsland(unittest.TestCase):
 
         with patch("builtins.input", side_effect=[
             "Sanctus",
-            "abc",  # Invalid menu input
-            "10",   # Check player status
-            "11"    # Quit game
+            "abc",
+            "10",
+            "11"
         ]):
             with redirect_stdout(output):
                 play_game()
